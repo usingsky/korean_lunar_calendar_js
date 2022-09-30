@@ -1,0 +1,12 @@
+# npm
+node_modules/
+
+# dev
+lib
+test
+.gitignore
+tsconfig.json
+jest.config.js
+
+# GIT
+.git
