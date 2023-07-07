@@ -1,6 +1,6 @@
 {
   "name": "korean-lunar-calendar",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "library to convert Korean lunar-calendar to Gregorian",
   "repository": {
     "type": "git",
@@ -18,9 +18,9 @@
   "types": "dist/korean-lunar-calendar.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/korean-lunar-calendar.js",
-      "import": "./dist/esm/korean-lunar-calendar.js",
-      "types": "./dist/korean-lunar-calendar.d.ts"
+      "types": "./dist/korean-lunar-calendar.d.ts",
+      "module": "./dist/esm/korean-lunar-calendar.js",
+      "default": "./dist/korean-lunar-calendar.js"
     }
   },
   "sideEffects": false,

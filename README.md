@@ -4,11 +4,13 @@
 ## Overview
 Korean calendar and Chinese calendar is same lunar calendar but have different date.
 This follow the KARI(Korea Astronomy and Space Science Institute)
-```
 한국 양음력 변환 (한국천문연구원 기준) - 네트워크 연결 불필요
+```
 음력 지원 범위 (1000년 01월 01일 ~ 2050년 11월 18일)
+Korean Lunar Calendar (1000-01-01 ~ 2050-11-18)
+
 양력 지원 범위 (1000년 02월 13일 ~ 2050년 12월 31일)
-Gregorian calendar (1000-02-13 ~ 2050-12-31) <--> Korean lunar-calendar (1000-01-01 ~ 2050-11-18)
+Gregorian Calendar (1000-02-13 ~ 2050-12-31)
 ```
 
 ## Docs
