@@ -1,30 +1,55 @@
 # korean_lunar_calendar
+> Library to convert Korean lunar-calendar to Gregorian calendar.
 
-Libraries to convert Korean lunar-calendar to Gregorian calendar.
+## Overview
+Korean calendar and Chinese calendar is same lunar calendar but have different date.
+This follow the KARI(Korea Astronomy and Space Science Institute)
+```
+한국 양음력 변환 (한국천문연구원 기준) - 네트워크 연결 불필요
+음력 지원 범위 (1000년 01월 01일 ~ 2050년 11월 18일)
+양력 지원 범위 (1000년 02월 13일 ~ 2050년 12월 31일)
+Gregorian calendar (1000-02-13 ~ 2050-12-31) <--> Korean lunar-calendar (1000-01-01 ~ 2050-11-18)
+```
 
-# Docs
+## Docs
 
-- [Installation](#installation)
+- [Install](#install)
+- [Import](#import)
 - [Example](#example)
 - [Validation](#validation)
+- [Other languages](#other-languages)
 
-# Installation
+## Install
 
 ```bash
 npm install korean-lunar-calendar
 ```
 
-# Example
+## Import
 
-- Import
+ECMAScript usage
 
-```javascript
+```js
 import KoreanLunarCalendar from "korean-lunar-calendar";
 ```
 
-- Korean Solar Date -> Korean Lunar Date (양력 -> 음력)
+CommonJS usage
 
-```javascript
+```js
+var KoreanLunarCalendar = require("korean-lunar-calendar");
+```
+
+CDN(Browser) usage
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/korean-lunar-calendar/dist/korean-lunar-calendar.min.js"></script>
+```
+
+## Example
+
+Korean Solar Date -> Korean Lunar Date (양력 -> 음력)
+
+```js
 const calendar = new KoreanLunarCalendar();
 
 // params : year(년), month(월), day(일)
@@ -40,7 +65,9 @@ console.log(calendar.getKoreanGapja());
 console.log(calendar.getChineseGapja());
 ```
 
-```javascript
+Result
+
+```js
 //(1)
 {
     "year": 2017,
@@ -66,9 +93,9 @@ console.log(calendar.getChineseGapja());
 }
 ```
 
-- Korean Lunar Date -> Korean Solar Date (음력 -> 양력)
+Korean Lunar Date -> Korean Solar Date (음력 -> 양력)
 
-```javascript
+```js
 const calendar = new KoreanLunarCalendar();
 
 // params : year(년), month(월), day(일), intercalation(윤달여부)
@@ -83,6 +110,8 @@ console.log(calendar.getKoreanGapja());
 // (3) Chinese GapJa String
 console.log(calendar.getChineseGapja());
 ```
+
+Result
 
 ```javascript
 //(1)
@@ -109,11 +138,11 @@ console.log(calendar.getChineseGapja());
 }
 ```
 
-# Validation
+## Validation
 
-- Check for invalid date input
+Check for invalid date input
 
-```javascript
+```js
 const calendar = new KoreanLunarCalendar();
 
 // Invalid date
@@ -124,3 +153,9 @@ calendar.setSolarDate(2051, 1, 1); // => return False
 calendar.setLunarDate(1000, 1, 1, False); // => return True
 calendar.setSolarDate(2050, 12, 31); // => return True
 ```
+
+## Other languages
+
+- Java : [https://github.com/usingsky/KoreanLunarCalendar](https://github.com/usingsky/KoreanLunarCalendar)
+- Python : [https://github.com/usingsky/korean_lunar_calendar_py](https://github.com/usingsky/korean_lunar_calendar_py)
+- Javascript : [https://github.com/usingsky/korean_lunar_calendar_js](https://github.com/usingsky/korean_lunar_calendar_js)

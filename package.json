@@ -1,29 +1,59 @@
 {
   "name": "korean-lunar-calendar",
-  "version": "0.3.1",
+  "version": "0.3.4",
   "description": "library to convert Korean lunar-calendar to Gregorian",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "npm run build:tsc",
-    "build:tsc": "tsc",
-    "test": "jest"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/usingsky/korean_lunar_calendar_js"
   },
+  "author": "Jinil Lee <usingsky@gmail.com>",
+  "license": "MIT",
   "keywords": [
     "korean",
     "lunar",
     "calendar"
   ],
-  "author": "Jinil Lee <usingsky@gmail.com>",
-  "license": "MIT",
+  "main": "dist/korean-lunar-calendar.js",
+  "module": "dist/esm/korean-lunar-calendar.js",
+  "types": "dist/korean-lunar-calendar.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/korean-lunar-calendar.js",
+      "import": "./dist/esm/korean-lunar-calendar.js",
+      "types": "./dist/korean-lunar-calendar.d.ts"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "compile": "tsc",
+    "clean": "rimraf --glob dist/* example/*.js",
+    "bundle": "rollup --config --bundleConfigAsCjs",
+    "build": "npm run clean && npm run bundle",
+    "lint": "eslint src --ext .ts",
+    "test": "jest"
+  },
   "devDependencies": {
-    "@types/jest": "^29.1.1",
-    "jest": "^29.1.2",
-    "ts-jest": "^29.0.3",
-    "typescript": "^4.8.4"
+    "@rollup/plugin-commonjs": "^25.0.2",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "@types/jest": "^29.5.2",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "eslint": "^8.44.0",
+    "jest": "^29.6.1",
+    "rimraf": "^5.0.1",
+    "rollup": "^3.26.2",
+    "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-dts": "^5.3.0",
+    "rollup-plugin-minification": "^0.2.0",
+    "rollup-plugin-typescript2": "^0.35.0",
+    "rollup-plugin-visualizer": "^5.9.2",
+    "ts-jest": "^29.1.1",
+    "typescript": "~5.1.6"
+  },
+  "engines": {
+    "node": ">= 16.14.0"
   }
 }

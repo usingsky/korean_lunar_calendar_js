@@ -1,4 +1,4 @@
-const DATA = {
+export const LUNAR_CALENDAR_DATA = {
   KOREAN_LUNAR_MIN_VALUE: 10000101,
   KOREAN_LUNAR_MAX_VALUE: 20501118,
   KOREAN_SOLAR_MIN_VALUE: 10000213,
@@ -219,5 +219,3 @@ const DATA = {
     0x830138b6,
   ],
 };
-
-export { DATA };

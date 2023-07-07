@@ -1,4 +1,4 @@
-import { DATA } from "./korean-lunar-data";
+import { LUNAR_CALENDAR_DATA } from "./korean-lunar-data.js";
 
 export interface CalendarData {
   year: number;
@@ -14,7 +14,7 @@ export interface GapJaData {
   intercalation?: string;
 }
 
-export default class KoreanLunarCalendar {
+export class KoreanLunarCalendar {
   private solarCalendar: CalendarData;
   private lunarCalendar: CalendarData;
 
@@ -32,7 +32,7 @@ export default class KoreanLunarCalendar {
   }
 
   private getLunarData(year: number): number {
-    return DATA.KOREAN_LUNAR_DATA[year - DATA.KOREAN_LUNAR_BASE_YEAR];
+    return LUNAR_CALENDAR_DATA.KOREAN_LUNAR_DATA[year - LUNAR_CALENDAR_DATA.KOREAN_LUNAR_BASE_YEAR];
   }
 
   private getLunarIntercalationMonth(lunarData: number): number {
@@ -40,7 +40,7 @@ export default class KoreanLunarCalendar {
   }
 
   private getLunarDays(year: number): number {
-    let lunarData = this.getLunarData(year);
+    const lunarData = this.getLunarData(year);
     return (lunarData >> 17) & 0x01ff;
   }
 
@@ -50,20 +50,20 @@ export default class KoreanLunarCalendar {
     isIntercalation: boolean
   ): number {
     let days = 0;
-    let lunarData = this.getLunarData(year);
+    const lunarData = this.getLunarData(year);
     if (
       isIntercalation &&
       this.getLunarIntercalationMonth(lunarData) == month
     ) {
       days =
         ((lunarData >> 16) & 0x01) > 0
-          ? DATA.LUNAR_BIG_MONTH_DAY
-          : DATA.LUNAR_SMALL_MONTH_DAY;
+          ? LUNAR_CALENDAR_DATA.LUNAR_BIG_MONTH_DAY
+          : LUNAR_CALENDAR_DATA.LUNAR_SMALL_MONTH_DAY;
     } else {
       days =
         ((lunarData >> (12 - month)) & 0x01) > 0
-          ? DATA.LUNAR_BIG_MONTH_DAY
-          : DATA.LUNAR_SMALL_MONTH_DAY;
+          ? LUNAR_CALENDAR_DATA.LUNAR_BIG_MONTH_DAY
+          : LUNAR_CALENDAR_DATA.LUNAR_SMALL_MONTH_DAY;
     }
     return days;
   }
@@ -71,7 +71,7 @@ export default class KoreanLunarCalendar {
   private getLunarDaysBeforeBaseYear(year: number): number {
     let days = 0;
     for (
-      let baseYear = DATA.KOREAN_LUNAR_BASE_YEAR;
+      let baseYear = LUNAR_CALENDAR_DATA.KOREAN_LUNAR_BASE_YEAR;
       baseYear < year + 1;
       baseYear++
     ) {
@@ -86,13 +86,13 @@ export default class KoreanLunarCalendar {
     isIntercalation: boolean
   ): number {
     let days = 0;
-    if (year >= DATA.KOREAN_LUNAR_BASE_YEAR && month > 0) {
+    if (year >= LUNAR_CALENDAR_DATA.KOREAN_LUNAR_BASE_YEAR && month > 0) {
       for (let baseMonth = 1; baseMonth < month + 1; baseMonth++) {
         days += this.getLunarDays2(year, baseMonth, false);
       }
 
       if (isIntercalation) {
-        let intercalationMonth = this.getLunarIntercalationMonth(
+        const intercalationMonth = this.getLunarIntercalationMonth(
           this.getLunarData(year)
         );
         if (intercalationMonth > 0 && intercalationMonth < month + 1) {
@@ -130,20 +130,20 @@ export default class KoreanLunarCalendar {
 
   private getSolarDays(year: number): number {
     let days = 0;
-    let lunarData = this.getLunarData(year);
+    const lunarData = this.getLunarData(year);
     days = this.isSolarIntercalationYear(lunarData)
-      ? DATA.SOLAR_BIG_YEAR_DAY
-      : DATA.SOLAR_SMALL_YEAR_DAY;
+      ? LUNAR_CALENDAR_DATA.SOLAR_BIG_YEAR_DAY
+      : LUNAR_CALENDAR_DATA.SOLAR_SMALL_YEAR_DAY;
     return days;
   }
 
   private getSolarDays2(year: number, month: number): number {
     let days = 0;
-    let lunarData = this.getLunarData(year);
+    const lunarData = this.getLunarData(year);
     if (month == 2 && this.isSolarIntercalationYear(lunarData)) {
-      days = DATA.SOLAR_DAYS[12];
+      days = LUNAR_CALENDAR_DATA.SOLAR_DAYS[12];
     } else {
-      days = DATA.SOLAR_DAYS[month - 1];
+      days = LUNAR_CALENDAR_DATA.SOLAR_DAYS[month - 1];
     }
     return days;
   }
@@ -151,7 +151,7 @@ export default class KoreanLunarCalendar {
   private getSolarDayBeforeBaseYear(year: number): number {
     let days = 0;
     for (
-      let baseYear = DATA.KOREAN_LUNAR_BASE_YEAR;
+      let baseYear = LUNAR_CALENDAR_DATA.KOREAN_LUNAR_BASE_YEAR;
       baseYear < year + 1;
       baseYear++
     ) {
@@ -174,7 +174,7 @@ export default class KoreanLunarCalendar {
       this.getSolarDayBeforeBaseYear(year - 1) +
       this.getSolarDaysBeforeBaseMonth(year, month - 1) +
       day;
-    days -= DATA.SOLAR_LUNAR_DAY_DIFF;
+    days -= LUNAR_CALENDAR_DATA.SOLAR_LUNAR_DAY_DIFF;
     return days;
   }
 
@@ -184,7 +184,7 @@ export default class KoreanLunarCalendar {
     lunarDay: number,
     isIntercalation: boolean
   ): void {
-    let absDays = this.getLunarAbsDays(
+    const absDays = this.getLunarAbsDays(
       lunarYear,
       lunarMonth,
       lunarDay,
@@ -200,7 +200,7 @@ export default class KoreanLunarCalendar {
         : lunarYear + 1;
 
     for (let month = 12; month > 0; month--) {
-      let absDaysByMonth = this.getSolarAbsDays(solarYear, month, 1);
+      const absDaysByMonth = this.getSolarAbsDays(solarYear, month, 1);
       if (absDays >= absDaysByMonth) {
         solarMonth = month;
         solarDay = absDays - absDaysByMonth + 1;
@@ -216,7 +216,7 @@ export default class KoreanLunarCalendar {
     solarMonth: number,
     solarDay: number
   ): void {
-    let absDays = this.getSolarAbsDays(solarYear, solarMonth, solarDay);
+    const absDays = this.getSolarAbsDays(solarYear, solarMonth, solarDay);
     let lunarYear = 0;
     let lunarMonth = 0;
     let lunarDay = 0;
@@ -228,7 +228,7 @@ export default class KoreanLunarCalendar {
         : solarYear - 1;
 
     for (let month = 12; month > 0; month--) {
-      let absDaysByMonth = this.getLunarAbsDays(lunarYear, month, 1, false);
+      const absDaysByMonth = this.getLunarAbsDays(lunarYear, month, 1, false);
       if (absDays >= absDaysByMonth) {
         lunarMonth = month;
 
@@ -263,12 +263,12 @@ export default class KoreanLunarCalendar {
     day: number
   ): boolean {
     let isValid = false;
-    let dateValue = year * 10000 + month * 100 + day;
+    const dateValue = year * 10000 + month * 100 + day;
     // 1582. 10. 5 ~ 1582. 10. 14 is not enable
     if (
-      (isLunar ? DATA.KOREAN_LUNAR_MIN_VALUE : DATA.KOREAN_SOLAR_MIN_VALUE) <=
+      (isLunar ? LUNAR_CALENDAR_DATA.KOREAN_LUNAR_MIN_VALUE : LUNAR_CALENDAR_DATA.KOREAN_SOLAR_MIN_VALUE) <=
         dateValue &&
-      (isLunar ? DATA.KOREAN_LUNAR_MAX_VALUE : DATA.KOREAN_SOLAR_MAX_VALUE) >=
+      (isLunar ? LUNAR_CALENDAR_DATA.KOREAN_LUNAR_MAX_VALUE : LUNAR_CALENDAR_DATA.KOREAN_SOLAR_MAX_VALUE) >=
         dateValue
     ) {
       if (month > 0 && month < 13 && day > 0) {
@@ -347,7 +347,7 @@ export default class KoreanLunarCalendar {
   }
 
   private setGapJa(): void {
-    let absDays = this.getLunarAbsDays(
+    const absDays = this.getLunarAbsDays(
       this.lunarCalendar.year,
       this.lunarCalendar.month,
       this.lunarCalendar.day,
@@ -355,37 +355,37 @@ export default class KoreanLunarCalendar {
     );
     if (absDays > 0) {
       this.gapjaYearInx[0] =
-        (this.lunarCalendar.year + 6 - DATA.KOREAN_LUNAR_BASE_YEAR) %
-        DATA.KOREAN_CHEONGAN.length;
+        (this.lunarCalendar.year + 6 - LUNAR_CALENDAR_DATA.KOREAN_LUNAR_BASE_YEAR) %
+        LUNAR_CALENDAR_DATA.KOREAN_CHEONGAN.length;
       this.gapjaYearInx[1] =
-        (this.lunarCalendar.year + 0 - DATA.KOREAN_LUNAR_BASE_YEAR) %
-        DATA.KOREAN_GANJI.length;
+        (this.lunarCalendar.year + 0 - LUNAR_CALENDAR_DATA.KOREAN_LUNAR_BASE_YEAR) %
+        LUNAR_CALENDAR_DATA.KOREAN_GANJI.length;
 
       let monthCount = this.lunarCalendar.month;
       monthCount +=
-        12 * (this.lunarCalendar.year - DATA.KOREAN_LUNAR_BASE_YEAR);
-      this.gapjaMonthInx[0] = (monthCount + 3) % DATA.KOREAN_CHEONGAN.length;
-      this.gapjaMonthInx[1] = (monthCount + 1) % DATA.KOREAN_GANJI.length;
+        12 * (this.lunarCalendar.year - LUNAR_CALENDAR_DATA.KOREAN_LUNAR_BASE_YEAR);
+      this.gapjaMonthInx[0] = (monthCount + 3) % LUNAR_CALENDAR_DATA.KOREAN_CHEONGAN.length;
+      this.gapjaMonthInx[1] = (monthCount + 1) % LUNAR_CALENDAR_DATA.KOREAN_GANJI.length;
 
-      this.gapjaDayInx[0] = (absDays + 4) % DATA.KOREAN_CHEONGAN.length;
-      this.gapjaDayInx[1] = (absDays + 2) % DATA.KOREAN_GANJI.length;
+      this.gapjaDayInx[0] = (absDays + 4) % LUNAR_CALENDAR_DATA.KOREAN_CHEONGAN.length;
+      this.gapjaDayInx[1] = (absDays + 2) % LUNAR_CALENDAR_DATA.KOREAN_GANJI.length;
     }
   }
 
   public getKoreanGapja(): GapJaData {
     this.setGapJa();
 
-    let yearGapja = `${DATA.KOREAN_CHEONGAN[this.gapjaYearInx[0]]}${
-      DATA.KOREAN_GANJI[this.gapjaYearInx[1]]
-    }${DATA.KOREAN_GAPJA_UNIT[this.gapjaYearInx[2]]}`;
-    let monthGapja = `${DATA.KOREAN_CHEONGAN[this.gapjaMonthInx[0]]}${
-      DATA.KOREAN_GANJI[this.gapjaMonthInx[1]]
-    }${DATA.KOREAN_GAPJA_UNIT[this.gapjaMonthInx[2]]}`;
-    let dayGapja = `${DATA.KOREAN_CHEONGAN[this.gapjaDayInx[0]]}${
-      DATA.KOREAN_GANJI[this.gapjaDayInx[1]]
-    }${DATA.KOREAN_GAPJA_UNIT[this.gapjaDayInx[2]]}`;
-    let intercalationGapja = !!this.lunarCalendar.intercalation
-      ? `${DATA.INTERCALATION_STR[0]}${DATA.KOREAN_GAPJA_UNIT[1]}`
+    const yearGapja = `${LUNAR_CALENDAR_DATA.KOREAN_CHEONGAN[this.gapjaYearInx[0]]}${
+      LUNAR_CALENDAR_DATA.KOREAN_GANJI[this.gapjaYearInx[1]]
+    }${LUNAR_CALENDAR_DATA.KOREAN_GAPJA_UNIT[this.gapjaYearInx[2]]}`;
+    const monthGapja = `${LUNAR_CALENDAR_DATA.KOREAN_CHEONGAN[this.gapjaMonthInx[0]]}${
+      LUNAR_CALENDAR_DATA.KOREAN_GANJI[this.gapjaMonthInx[1]]
+    }${LUNAR_CALENDAR_DATA.KOREAN_GAPJA_UNIT[this.gapjaMonthInx[2]]}`;
+    const dayGapja = `${LUNAR_CALENDAR_DATA.KOREAN_CHEONGAN[this.gapjaDayInx[0]]}${
+      LUNAR_CALENDAR_DATA.KOREAN_GANJI[this.gapjaDayInx[1]]
+    }${LUNAR_CALENDAR_DATA.KOREAN_GAPJA_UNIT[this.gapjaDayInx[2]]}`;
+    const intercalationGapja = this.lunarCalendar.intercalation
+      ? `${LUNAR_CALENDAR_DATA.INTERCALATION_STR[0]}${LUNAR_CALENDAR_DATA.KOREAN_GAPJA_UNIT[1]}`
       : "";
 
     return {
@@ -399,17 +399,17 @@ export default class KoreanLunarCalendar {
   public getChineseGapja(): GapJaData {
     this.setGapJa();
 
-    let yearGapja = `${DATA.CHINESE_CHEONGAN[this.gapjaYearInx[0]]}${
-      DATA.CHINESE_GANJI[this.gapjaYearInx[1]]
-    }${DATA.CHINESE_GAPJA_UNIT[this.gapjaYearInx[2]]}`;
-    let monthGapja = `${DATA.CHINESE_CHEONGAN[this.gapjaMonthInx[0]]}${
-      DATA.CHINESE_GANJI[this.gapjaMonthInx[1]]
-    }${DATA.CHINESE_GAPJA_UNIT[this.gapjaMonthInx[2]]}`;
-    let dayGapja = `${DATA.CHINESE_CHEONGAN[this.gapjaDayInx[0]]}${
-      DATA.CHINESE_GANJI[this.gapjaDayInx[1]]
-    }${DATA.CHINESE_GAPJA_UNIT[this.gapjaDayInx[2]]}`;
-    let intercalationGapja = !!this.lunarCalendar.intercalation
-      ? `${DATA.INTERCALATION_STR[1]}${DATA.CHINESE_GAPJA_UNIT[1]}`
+    const yearGapja = `${LUNAR_CALENDAR_DATA.CHINESE_CHEONGAN[this.gapjaYearInx[0]]}${
+      LUNAR_CALENDAR_DATA.CHINESE_GANJI[this.gapjaYearInx[1]]
+    }${LUNAR_CALENDAR_DATA.CHINESE_GAPJA_UNIT[this.gapjaYearInx[2]]}`;
+    const monthGapja = `${LUNAR_CALENDAR_DATA.CHINESE_CHEONGAN[this.gapjaMonthInx[0]]}${
+      LUNAR_CALENDAR_DATA.CHINESE_GANJI[this.gapjaMonthInx[1]]
+    }${LUNAR_CALENDAR_DATA.CHINESE_GAPJA_UNIT[this.gapjaMonthInx[2]]}`;
+    const dayGapja = `${LUNAR_CALENDAR_DATA.CHINESE_CHEONGAN[this.gapjaDayInx[0]]}${
+      LUNAR_CALENDAR_DATA.CHINESE_GANJI[this.gapjaDayInx[1]]
+    }${LUNAR_CALENDAR_DATA.CHINESE_GAPJA_UNIT[this.gapjaDayInx[2]]}`;
+    const intercalationGapja = this.lunarCalendar.intercalation
+      ? `${LUNAR_CALENDAR_DATA.INTERCALATION_STR[1]}${LUNAR_CALENDAR_DATA.CHINESE_GAPJA_UNIT[1]}`
       : "";
 
     return {
