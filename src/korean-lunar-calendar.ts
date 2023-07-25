@@ -372,52 +372,44 @@ export class KoreanLunarCalendar {
     }
   }
 
-  public getKoreanGapja(): GapJaData {
+  public getGapJaIndex() {
     this.setGapJa();
 
-    const yearGapja = `${LUNAR_CALENDAR_DATA.KOREAN_CHEONGAN[this.gapjaYearInx[0]]}${
-      LUNAR_CALENDAR_DATA.KOREAN_GANJI[this.gapjaYearInx[1]]
-    }${LUNAR_CALENDAR_DATA.KOREAN_GAPJA_UNIT[this.gapjaYearInx[2]]}`;
-    const monthGapja = `${LUNAR_CALENDAR_DATA.KOREAN_CHEONGAN[this.gapjaMonthInx[0]]}${
-      LUNAR_CALENDAR_DATA.KOREAN_GANJI[this.gapjaMonthInx[1]]
-    }${LUNAR_CALENDAR_DATA.KOREAN_GAPJA_UNIT[this.gapjaMonthInx[2]]}`;
-    const dayGapja = `${LUNAR_CALENDAR_DATA.KOREAN_CHEONGAN[this.gapjaDayInx[0]]}${
-      LUNAR_CALENDAR_DATA.KOREAN_GANJI[this.gapjaDayInx[1]]
-    }${LUNAR_CALENDAR_DATA.KOREAN_GAPJA_UNIT[this.gapjaDayInx[2]]}`;
-    const intercalationGapja = this.lunarCalendar.intercalation
-      ? `${LUNAR_CALENDAR_DATA.INTERCALATION_STR[0]}${LUNAR_CALENDAR_DATA.KOREAN_GAPJA_UNIT[1]}`
-      : "";
-
     return {
-      year: yearGapja,
-      month: monthGapja,
-      day: dayGapja,
-      intercalation: intercalationGapja,
+      cheongan: {
+        year: this.gapjaYearInx[0],
+        month: this.gapjaMonthInx[0],
+        day: this.gapjaDayInx[0]
+      },
+      ganji: {
+        year: this.gapjaYearInx[1],
+        month: this.gapjaMonthInx[1],
+        day: this.gapjaDayInx[1]
+      }
     };
   }
 
-  public getChineseGapja(): GapJaData {
-    this.setGapJa();
-
-    const yearGapja = `${LUNAR_CALENDAR_DATA.CHINESE_CHEONGAN[this.gapjaYearInx[0]]}${
-      LUNAR_CALENDAR_DATA.CHINESE_GANJI[this.gapjaYearInx[1]]
-    }${LUNAR_CALENDAR_DATA.CHINESE_GAPJA_UNIT[this.gapjaYearInx[2]]}`;
-    const monthGapja = `${LUNAR_CALENDAR_DATA.CHINESE_CHEONGAN[this.gapjaMonthInx[0]]}${
-      LUNAR_CALENDAR_DATA.CHINESE_GANJI[this.gapjaMonthInx[1]]
-    }${LUNAR_CALENDAR_DATA.CHINESE_GAPJA_UNIT[this.gapjaMonthInx[2]]}`;
-    const dayGapja = `${LUNAR_CALENDAR_DATA.CHINESE_CHEONGAN[this.gapjaDayInx[0]]}${
-      LUNAR_CALENDAR_DATA.CHINESE_GANJI[this.gapjaDayInx[1]]
-    }${LUNAR_CALENDAR_DATA.CHINESE_GAPJA_UNIT[this.gapjaDayInx[2]]}`;
-    const intercalationGapja = this.lunarCalendar.intercalation
-      ? `${LUNAR_CALENDAR_DATA.INTERCALATION_STR[1]}${LUNAR_CALENDAR_DATA.CHINESE_GAPJA_UNIT[1]}`
-      : "";
+  public getGapja(IsChinese?:boolean): GapJaData {
+    const gapjaInx = this.getGapJaIndex();
+    const cheongan = !IsChinese ? LUNAR_CALENDAR_DATA.KOREAN_CHEONGAN : LUNAR_CALENDAR_DATA.CHINESE_CHEONGAN;
+    const ganji = !IsChinese ? LUNAR_CALENDAR_DATA.KOREAN_GANJI : LUNAR_CALENDAR_DATA.CHINESE_GANJI;
+    const unit = !IsChinese ? LUNAR_CALENDAR_DATA.KOREAN_GAPJA_UNIT : LUNAR_CALENDAR_DATA.CHINESE_GAPJA_UNIT;
+    const intercalationStr = !IsChinese ? `${LUNAR_CALENDAR_DATA.INTERCALATION_STR[0]}${LUNAR_CALENDAR_DATA.KOREAN_GAPJA_UNIT[1]}` : `${LUNAR_CALENDAR_DATA.INTERCALATION_STR[1]}${LUNAR_CALENDAR_DATA.CHINESE_GAPJA_UNIT[1]}`;
 
     return {
-      year: yearGapja,
-      month: monthGapja,
-      day: dayGapja,
-      intercalation: intercalationGapja,
+      year: `${cheongan[gapjaInx.cheongan.year]}${ganji[gapjaInx.ganji.year]}${unit[this.gapjaYearInx[2]]}`,
+      month: `${cheongan[gapjaInx.cheongan.month]}${ganji[gapjaInx.ganji.month]}${unit[this.gapjaMonthInx[2]]}`,
+      day: `${cheongan[gapjaInx.cheongan.day]}${ganji[gapjaInx.ganji.day]}${unit[this.gapjaDayInx[2]]}`,
+      intercalation: this.lunarCalendar.intercalation ? intercalationStr : ""
     };
+  }
+
+  public getKoreanGapja(): GapJaData {
+    return this.getGapja();
+  }
+
+  public getChineseGapja(): GapJaData {
+    return this.getGapja(true);
   }
 
   public getLunarCalendar(): CalendarData {

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>한국 양음력 변환</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/variable/pretendardvariable.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/korean-lunar-calendar@0.3.6/dist/korean-lunar-calendar.min.js"></script>
+        <script type="module">
+            import { html, Component, render } from "https://unpkg.com/htm/preact/standalone.module.js";
+
+            class App extends Component {
+                render(_, {}) {
+                    return html`
+                        <div class="app">
+                            <div class="container">
+                                <${Header} />
+                                <${Content} />
+                                <${Footer} />
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            const Header = (props) => html`
+                <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+                    <div class="navbar-brand">
+                        <div class="navbar-item">
+                            <p class="title is-4 ml-4">한국 양음력 변환</p>
+                        </div>
+                    </div>
+                    <div class="navbar-menu">
+                        <div class="navbar-start">
+                            <div class="navbar-item">KoreanLunarCalendar</div>
+                        </div>
+                    </div>
+                    <a href="https://github.com/usingsky/korean_lunar_calendar_js" aria-label="Source on Github">
+                    <svg width="52" height="52" viewBox="0 0 250 250" style="fill: #151513; color: #fff; position: absolute; top: 0; border: 0; right: 0" aria-hidden="true">
+                        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+                        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px" class="octo-arm"></path>
+                        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+                    </svg>
+                    </a>
+                </nav>
+            `;
+
+            const Tab = (props) => html`
+                <div class="tabs is-toggle is-fullwidth">
+                    <ul>
+                        <li class=${props.mode === "s2l" ? "is-active":""}>
+                            <a onClick=${() => props.onTabClick("s2l")}>🌞양력 -> 🌛음력</a>
+                        </li>
+                        <li class=${props.mode === "l2s" ? "is-active":""}>
+                            <a onClick=${() => props.onTabClick("l2s")}>🌛음력 -> 🌞양력</a>
+                        </li>
+                    </ul>
+                </div>
+            `;
+
+            const InputNum = (props) => html`
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal" style="min-width: 100px;">
+                        <label class="label has-text-right" >${props.label}</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <p class="control">
+                                <input class="input" type="number" min=${props.min} max=${props.max} onInput=${(e) => props.onInput(props.name, e)} value=${props.value} />
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const InputCheck = (props) => !props.hidden ? html`
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">${props.label}</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <div class="control">
+                                <label class="checkbox">
+                                    <input type="checkbox" onClick=${(e) => props.onInput(props.name, e)} checked=${props.value} />
+                                    윤달(intercalation)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ` : html`<div></div>`;
+
+            class DateForm extends Component {
+                state = {
+                    mode: 's2l',
+                    year: new Date().getFullYear(),
+                    month: new Date().getMonth() + 1,
+                    day: new Date().getDate(),
+                    intercalation: false,
+                    }
+                
+                onInput(name, e) {
+                    const value = name !== "intercalation" ? Number(e.target.value) : !this.state.intercalation;
+
+                    this.setState({
+                        ...this.state,
+                        [name]: value,
+                    });
+                }
+
+                render({ onSubmit }, { mode, year, month, day, intercalation }) {
+                    return html`
+                        <${Tab} mode=${mode} onTabClick=${(mode) => {this.setState({...this.state, mode: mode});}} />
+                        <${InputNum} label="Year (년)" min="1000" max="2050" name="year" value=${year} onInput=${(name, e) => this.onInput(name, e)} />
+                        <${InputNum} label="Month (월)" min="1" max="12" name="month" value=${month} onInput=${(name, e) => this.onInput(name, e)} />
+                        <${InputNum} label="Day (일)" min="1" max="31" name="day" value=${day} onInput=${(name, e) => this.onInput(name, e)} />
+                        <${InputCheck} label="" name="intercalation" value=${intercalation} onInput=${(name, e) => this.onInput(name, e)} hidden=${mode === "s2l"} />
+                        <div class="field is-horizontal">
+                            <button class="button is-primary is-fullwidth" onClick=${() => onSubmit(this.state)}>
+                                변환하기 (CONVERT)
+                            </button>
+                        </div>
+                    `;
+                }
+            };
+
+            const ConvertPanel = (props) => {
+                const calendar = new KoreanLunarCalendar();
+                let isValid = null;
+                if(props.mode === 's2l') {
+                    isValid = calendar.setSolarDate(props.year, props.month, props.day);
+                } else if(props.mode === 'l2s') {
+                    isValid = calendar.setLunarDate(props.year, props.month, props.day, props.intercalation);
+                } else {
+                    return html`
+                        <article class="message is-link">
+                            <div class="message-header">값을 입력하세요.</div>
+                        </article>
+                    `;
+                }
+                if(!isValid) {
+                    return html`
+                        <article class="message is-danger">
+                            <div class="message-header">잘못된 값입니다.</div>
+                        </article>
+                    `;
+                }
+                const isSolar = () => props.mode === "s2l";
+                const originCalendar = isSolar() ? calendar.getSolarCalendar() : calendar.getLunarCalendar();
+                const convCalendar = isSolar() ? calendar.getLunarCalendar() : calendar.getSolarCalendar();
+                const getDateString = (isSolar, year, month, day, intercalation) => {
+                    return `${isSolar ? "🌞 양력" : "🌛 음력"} ${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")} ${!isSolar && intercalation ? "(윤달)" : ""}`;
+                }
+                const getGapjaString = (year, month, day, intercalation) => `${year} ${month} ${day} ${intercalation}`;
+
+                const gapjaEmoji = ['🐭', '🐮', '🐯', '🐰', '🐲', '🐍', '🐴', '🐑', '🐵', '🐔','🐶','🐷'];
+                const gapjaLabel = ['쥐', '소', '호랑이', '토끼', '용', '뱀', '말', '양', '원숭이', '닭','개','돼지'];
+
+                return html`
+                    <article class="message is-link">
+                        <div class="message-header">
+                            <p>${getDateString(props.mode === "s2l", originCalendar.year, originCalendar.month, originCalendar.day, originCalendar.intercalation)}</p>
+                        </div>
+                        <div class="message-body">
+                            <p class="mt-4"><strong class="title is-5">${getDateString(props.mode !== "s2l", convCalendar.year, convCalendar.month, convCalendar.day, convCalendar.intercalation)}</strong></p>
+                            <p class="mt-4"><strong class="title is-5">${getGapjaString(calendar.getKoreanGapja().year, calendar.getKoreanGapja().month, calendar.getKoreanGapja().day, calendar.getKoreanGapja().intercalation)}</strong></p>
+                            <p class="mt-4"><strong class="title is-5">${getGapjaString(calendar.getChineseGapja().year, calendar.getChineseGapja().month, calendar.getChineseGapja().day, calendar.getChineseGapja().intercalation)}</strong></p>
+                            <p class="mt-4"><strong class="title is-5">${gapjaEmoji[calendar.getGapJaIndex().ganji.year]} ${gapjaLabel[calendar.getGapJaIndex().ganji.year]}띠</strong></p>
+                        </div>
+                    </article>
+                `;
+            };
+
+            class Content extends Component {
+                onSubmit = (data) => this.setState(data);
+                
+                render(_, { mode, year, month, day, intercalation}) {
+                    return html`
+                    <div class="container m-4 is-light">
+                        <div class="columns">
+                            <div class="column">
+                                <${DateForm} onSubmit=${this.onSubmit} />
+                            </div>
+                            <div class="column">
+                                <${ConvertPanel} mode=${this.state.mode} year=${this.state.year} month=${this.state.month} day=${this.state.day} intercalation=${this.state.intercalation} />
+                            </div>
+                        </div>
+                        </div>
+                    `;
+                }
+            }
+
+            const Footer = (props) => html`
+                <footer class="footer">
+                    <div class="content has-text-centered">
+                        <strong>KoreanLunarCalendar</strong> by <a href="https://github.com/usingsky">usingsky</a>. The source code is licensed
+                        <a href="http://opensource.org/licenses/mit-license.php"> MIT</a>.
+                    </div>
+                </footer>`
+
+            render(html`<${App} />`, document.body);
+        </script>
+    </head>
+    <body style="font-family: 'Pretendard Variable', Pretendard, -apple-system, system-ui sans-serif;"></body>
+</html>
