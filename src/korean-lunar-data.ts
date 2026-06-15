@@ -23,7 +23,7 @@ export const LUNAR_CALENDAR_DATA = {
     0xc720, 0xc220, 0xd574,
   ].map((c) => String.fromCharCode(c)),
   KOREAN_GAPJA_UNIT: [0xb144, 0xc6d4, 0xc77c].map((c) =>
-    String.fromCharCode(c)
+    String.fromCharCode(c),
   ),
 
   CHINESE_CHEONGAN: [
@@ -35,7 +35,7 @@ export const LUNAR_CALENDAR_DATA = {
     0x9149, 0x620c, 0x4ea5,
   ].map((c) => String.fromCharCode(c)),
   CHINESE_GAPJA_UNIT: [0x5e74, 0x6708, 0x65e5].map((c) =>
-    String.fromCharCode(c)
+    String.fromCharCode(c),
   ),
 
   INTERCALATION_STR: [0xc724, 0x958f].map((c) => String.fromCharCode(c)),
